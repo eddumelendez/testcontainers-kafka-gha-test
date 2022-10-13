@@ -35,7 +35,11 @@ class KafkaContainerTest {
     void testUsage(String tag) throws Exception {
         DockerImageName KAFKA_TEST_IMAGE = DockerImageName.parse("confluentinc/cp-kafka:" + tag);
 
-        try (KafkaContainer kafka = new KafkaContainer(KAFKA_TEST_IMAGE)) {
+        try (KafkaContainer kafka = new KafkaContainer(KAFKA_TEST_IMAGE)
+                .withNetwork(null)
+                .withEnv("KAFKA_TRANSACTION_STATE_LOG_MIN_ISR", "1")
+                .withEnv("KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR", "1")
+        ) {
             kafka.start();
             testKafkaFunctionality(kafka.getBootstrapServers(), 1, 1);
         }
