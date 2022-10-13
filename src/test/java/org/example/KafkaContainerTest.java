@@ -31,9 +31,10 @@ import static org.assertj.core.api.Assertions.tuple;
 class KafkaContainerTest {
 
     @ParameterizedTest(name = "kafka image version {0}")
-    @ValueSource(strings = {"6.2.2", "7.0.1"})
+    @ValueSource(strings = {"", "6.2.2", "7.0.1"})
     void testUsage(String tag) throws Exception {
-        DockerImageName KAFKA_TEST_IMAGE = DockerImageName.parse("confluentinc/cp-kafka:" + tag);
+        String image = tag.isEmpty() ? "confluentinc/cp-kafka" : "confluentinc/cp-kafka:" + tag;
+        DockerImageName KAFKA_TEST_IMAGE = DockerImageName.parse(image);
 
         try (KafkaContainer kafka = new KafkaContainer(KAFKA_TEST_IMAGE)
                 .withNetwork(null)
